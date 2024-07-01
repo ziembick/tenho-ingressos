@@ -3,6 +3,9 @@ import Title from "@/app/components/Title";
 import { EventModel, SpotModel } from "@/models";
 import Link from "next/link";
 import React from "react";
+import { TicketKindSelect } from "./TicketKindSelect";
+import { cookies } from "next/headers";
+import { EventImage } from "@/app/components/EventImage";
 
 export async function getSpots(eventId: string): Promise<{
   event: EventModel;
@@ -12,6 +15,9 @@ export async function getSpots(eventId: string): Promise<{
     `http://localhost:8080/events/${eventId}/spots`,
     {
       cache: "no-store",
+      next: {
+        tags: [`events/${eventId}`]
+      }
     }
   );
 
@@ -56,10 +62,25 @@ export default async function SpotsLayoutPage({
     };
   });
 
+  const cookieStore = cookies();
+  const selectedSpots = JSON.parse(cookieStore.get("spots")?.value  || "[]");
+
+  let totalPrice = selectedSpots.length * event.price
+  const ticketKind = cookieStore.get('ticketKind')?.value || "full"
+
+  if(ticketKind === 'half') {
+    totalPrice = totalPrice / 2
+  }
+  const formattedTotalPrice = new Intl.NumberFormat("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+  }).format(totalPrice);
+
+
   return (
     <main className="mt-10">
       <div className="flex w-[1176px] max-w-full flex-row flex-wrap justify-center gap-x-8 rounded-2xl bg-secondary p-4 md:justify-normal">
-        <img src="/image.png" alt="" />
+        <EventImage src={event.image_url} alt={event.name} />
         <div className="flex max-w-full flex-col gap-y-6">
           <div className="flex flex-col gap-y-2 ">
             <p className="text-sm font-semibold uppercase text-subtitle">
@@ -107,9 +128,9 @@ export default async function SpotsLayoutPage({
                           key={spot.name}
                           spotId={spot.name}
                           spotLabel={spot.name.slice(1)}
-                          reserverd={false}
-                          disabled={false}
-                          eventId=""
+                          selected={selectedSpots.includes(spot.name)}
+                          disabled={spot.status === 'sold'}
+                          eventId={event.id}
                         />
                       );
                     })}
@@ -142,9 +163,9 @@ export default async function SpotsLayoutPage({
             Meia-entrada: {`R$ 50,00`}
           </p>
           <div className="flex flex-col">
-            select para escolher se é inteira ou meia
+            <TicketKindSelect defaultValue={ticketKind as any} price={event.price}/>
           </div>
-          <div>Total: {`R$ preço total`}</div>
+          <div>Total: {formattedTotalPrice}</div>
           <Link
             href="/checkout"
             className="rounded-lg bg-btn-primary py-4 text-sm font-semibold uppercase text-btn-primary text-center hover:bg-[#fff]"

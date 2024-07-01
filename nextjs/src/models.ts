@@ -3,7 +3,7 @@ export type EventModel = {
     name: string;
     organization: string;
     date: string;
-    price: string;
+    price: number;
     rating: string;
     image_url: string;
     location: string; 

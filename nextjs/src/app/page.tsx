@@ -7,6 +7,9 @@ import EventCard from "./components/EventCard";
 export async function getEvents(): Promise<EventModel[]> {
   const response = await fetch('http://localhost:8080/events', {
     cache: 'no-store',
+    // next: {
+    //   tags: ["events"]
+    // }
   })
 
   return (await response.json()).events;
