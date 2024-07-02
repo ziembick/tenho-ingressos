@@ -12,12 +12,12 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 
+	httpSwagger "github.com/swaggo/http-swagger"
 	_ "github.com/ziembick/tenho-ingressos/golang/docs" // Import the generated docs
 	httpHandler "github.com/ziembick/tenho-ingressos/golang/internal/events/infra/http"
 	"github.com/ziembick/tenho-ingressos/golang/internal/events/infra/repository"
 	"github.com/ziembick/tenho-ingressos/golang/internal/events/infra/service"
 	"github.com/ziembick/tenho-ingressos/golang/internal/events/usecase"
-	httpSwagger "github.com/swaggo/http-swagger"
 )
 
 // @title Events API
@@ -105,7 +105,6 @@ func main() {
 	<-idleConnsClosed
 	log.Println("Servidor HTTP finalizado")
 }
-
 
 // package main
 
