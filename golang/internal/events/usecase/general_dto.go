@@ -22,9 +22,9 @@ type EventDTO struct {
 	PartnerID    int     `json:"partner_id"`
 }
 
-type TicketDTO struct {
-	ID         string  `json:"id"`
-	SpotID     string  `json:"spot_id"`
-	TicketType string  `json:"ticket_type"`
-	Price      float64 `json:"price"`
-}
+// type TicketDTO struct {
+// 	ID         string  `json:"id"`
+// 	SpotID     string  `json:"spot_id"`
+// 	TicketKind string  `json:"ticket_kind"`
+// 	Price      float64 `json:"price"`
+// }
