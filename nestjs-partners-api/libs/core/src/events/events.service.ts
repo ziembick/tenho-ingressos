@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
-
 import { ReserveSpotDto } from './dto/reserve-spot.dto';
 import { Prisma, SpotStatus, TicketStatus } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
@@ -45,7 +44,6 @@ export class EventsService {
     });
   }
 
-  //select * from Spot where name in ('A1', 'A2');
   async reserveSpot(dto: ReserveSpotDto & { eventId: string }) {
     const spots = await this.prismaService.spot.findMany({
       where: {
@@ -60,7 +58,7 @@ export class EventsService {
       const notFoundSpotsName = dto.spots.filter(
         (spotName) => !foundSpotsName.includes(spotName),
       );
-      throw new Error(`Spots ${notFoundSpotsName.join(',')} not found`);
+      throw new Error(`Spots ${notFoundSpotsName.join(', ')} not found`);
     }
 
     try {
@@ -93,6 +91,9 @@ export class EventsService {
                   spotId: spot.id,
                   ticketKind: dto.ticket_kind,
                   email: dto.email,
+                },
+                include: {
+                  Spot: true,
                 },
               }),
             ),

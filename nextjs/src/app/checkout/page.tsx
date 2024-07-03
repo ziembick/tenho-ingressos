@@ -1,17 +1,23 @@
 import { cookies } from "next/headers";
 
 import { redirect } from "next/navigation";
-import { EventModel, SpotModel } from "../../models";
-import Title from "../components/Title";
+import { EventModel } from "../../models";
 import { CheckoutForm } from "./CheckoutForm";
+import Title from "../components/Title";
 
 export async function getEvent(eventId: string): Promise<EventModel> {
-  const response = await fetch(`http://localhost:8080/events/${eventId}`, {
-    cache: "no-store",
-    next: {
-      tags: [`events/${eventId}`],
-    },
-  });
+  const response = await fetch(
+    `${process.env.GOLANG_API_URL}/events/${eventId}`,
+    {
+      headers: {
+        apikey: process.env.GOLANG_API_TOKEN as string,
+      },
+      cache: "no-store",
+      next: {
+        tags: [`events/${eventId}`],
+      },
+    }
+  );
 
   return response.json();
 }
@@ -29,12 +35,10 @@ export default async function CheckoutPage() {
   if (ticketKind === "half") {
     totalPrice = totalPrice / 2;
   }
-
   const formattedTotalPrice = new Intl.NumberFormat("pt-BR", {
     style: "currency",
     currency: "BRL",
   }).format(totalPrice);
-
   return (
     <main className="mt-10 flex flex-wrap justify-center md:justify-between">
       <div className="mb-4 flex max-h-[250px] w-full max-w-[478px] flex-col gap-y-6 rounded-2xl bg-secondary p-4">
@@ -53,10 +57,9 @@ export default async function CheckoutPage() {
         </p>
         <p className="font-semibold text-white">{formattedTotalPrice}</p>
       </div>
-
       <div className="w-full max-w-[650px] rounded-2xl bg-secondary p-4">
         <Title>Informações de pagamento</Title>
-        <CheckoutForm>
+        <CheckoutForm className="mt-6 flex flex-col gap-y-3">
           <div className="flex flex-col">
             <label htmlFor="titular">E-mail</label>
             <input

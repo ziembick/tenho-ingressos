@@ -5,6 +5,7 @@ import { checkoutAction } from "../../actions";
 import { useFormState } from "react-dom";
 import { ErrorMessage } from "../components/ErrorMessage";
 
+
 export async function getCardHash({ cardName, cardNumber, expireDate, cvv }: any) {
   return Math.random().toString(36).substring(7);
 }
